@@ -170,7 +170,7 @@ spec:
               value: mongodb
             - name: MONGO_PORT
               value: '27017'
-          image: 'acme-air-${trigger[''tag'']}'
+          image: "garreeoke/acmenode:${trigger['tag']}"
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
