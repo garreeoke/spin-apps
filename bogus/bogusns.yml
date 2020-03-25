@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: bogus2
+  name: bogus8
 spec:
   finalizers:
     - kubernetes
