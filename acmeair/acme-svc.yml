@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: acme-web
+    tier: frontend
+  name: acme-web
+  namespace: acme-air
+spec:
+  ports:
+  - name: http-port
+    port: 3000
+    protocol: TCP
+  selector:
+    app: acme-web
+  sessionAffinity: None
+  type: NodePort
+

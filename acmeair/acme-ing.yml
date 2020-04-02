@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: acme-web
+  namespace: acme-air
+  annotations:
+    ncp/rewrite_target: "/"
+spec:
+  rules:
+  - host: acme-air.armory.garreeoke.io
+    http:
+      paths:
+      - backend:
+          serviceName: acme-web
+          servicePort: 3000
