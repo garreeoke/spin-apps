@@ -57,7 +57,7 @@ spec:
           value: mongodb
         - name: MONGO_PORT
           value: "27017"
-        image: garreeoke/acmenode:108
+        image: garreeoke/acmenode:109
         imagePullPolicy: Always
         name: acme-web
         ports:
