@@ -170,7 +170,7 @@ spec:
               value: mongodb
             - name: MONGO_PORT
               value: '27017'
-          image: ${#stage(''FindDeploymentArtifact'').context["artifacts"][0]["reference"]}'
+          image: '${#stage(''FindDeploymentArtifact'').context["artifacts"][0]["reference"]}'
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
