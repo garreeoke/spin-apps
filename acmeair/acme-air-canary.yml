@@ -170,7 +170,7 @@ spec:
               value: mongodb
             - name: MONGO_PORT
               value: '27017'
-          image: garreeoke/acmenode:8
+          image: garreeoke/acmenode:9
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
