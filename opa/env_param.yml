@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  ticket.rego: |
+    package opa.pipelines
+    deny["Every pipeline must have environment_name parameter"] {
+       ticket = [d | d = input.pipeline.parameterConfig[_].name; d == "environment_name"]
+       count(input.pipeline.stages[_]) > 0
+       count(ticket) == 0
+    }
+kind: ConfigMap
+metadata:
+  labels:
+    openpolicyagent.org/policy: rego
+  name: env-param
+  namespace: opa

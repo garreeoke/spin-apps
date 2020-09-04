@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  tf-runtime-time-value.rego: |
+    package spinnaker.execution.stages.before.terraform
+    deny[msg] {
+        input.stage.type == "terraform"
+        input.stage.context.terraformVersion != "0.12.20"
+        msg := "In production, must use terraform version 0.12.20"
+    }
+kind: ConfigMap
+metadata:
+  labels:
+    type: runtime
+    openpolicyagent.org/policy: rego
+  name: tf-version
+  namespace: opa
