@@ -1,0 +1,4 @@
+service_instance_name: userprovided-test
+credentials:
+  username: tester
+  password: tester
