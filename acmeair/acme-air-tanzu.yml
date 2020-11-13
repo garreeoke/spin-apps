@@ -1,0 +1,217 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: mongodb
+    category: database
+    jiraTask: ${parameters.task_id}
+  name: mongodb
+  namespace: armory
+spec:
+  podManagementPolicy: Parallel
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+      jiraTask: ${parameters.task_id}
+  serviceName: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+        jiraTask: ${parameters.task_id}
+    spec:
+      affinity: {}
+      containers:
+        - args:
+            - mongod
+            - '--storageEngine'
+            - wiredTiger
+            - '--smallfiles'
+            - '--noprealloc'
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+          image: 'mongo:3.2'
+          imagePullPolicy: Always
+          name: mongodb
+          ports:
+            - containerPort: 27017
+              name: connection-port
+              protocol: TCP
+          resources: {}
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /data/db
+              name: acme-air-${parameters.task_id}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  volumeClaimTemplates:
+    - metadata:
+        name: acme-air-${parameters.task_id}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+        storageClassName: standard
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongodb
+    jiraTask: ${parameters.task_id}
+  name: mongodb
+  namespace: armory
+spec:
+  clusterIP: None
+  ports:
+    - name: connection-port
+      port: 27017
+      protocol: TCP
+      targetPort: connection-port
+  selector:
+    app: mongodb
+    jiraTask: ${parameters.task_id}
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: acme-web
+    jiraTask: ${parameters.task_id}
+  name: acme-web
+  namespace: armory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: acme-web
+      jiraTask: ${parameters.task_id}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: acme-web
+        jiraTask: ${parameters.task_id}
+    spec:
+      affinity: {}
+      containers:
+        - args:
+            - npm
+            - start
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: PORT
+              value: '3000'
+            - name: MONGO_HOST
+              value: mongodb
+            - name: MONGO_PORT
+              value: '27017'
+          image: garreeoke/acmenode:${parameters.task_id}
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http-port
+          name: acme-web
+          ports:
+            - containerPort: 3000
+              name: http-port
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http-port
+          resources: {}
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: acme-web
+    jiraTask: ${parameters.task_id}
+  name: acme-web
+  namespace: acme-air-${trigger['tag']}
+spec:
+  ports:
+    - name: http-port
+      port: 3000
+      protocol: TCP
+  selector:
+    app: acme-web
+    jiraTask: ${parameters.task_id}
+  sessionAffinity: None
+  type: LoadBalancer
