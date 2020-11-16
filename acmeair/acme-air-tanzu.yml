@@ -85,7 +85,7 @@ spec:
         resources:
           requests:
             storage: 100Gi
-        storageClassName: standard
+        storageClassName: ${parameters.tanzu_storage_class} 
 ---
 apiVersion: v1
 kind: Service
