@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: acme-web
   namespace: acme-air
+  annotations: 
+    kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
   - host: acme-air.armory.garreeoke.io

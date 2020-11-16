@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   labels:
     app: acme-web 
-  name: acme-web
+    analysis-tag: ${parameters.analysis-tag}
+  name: acme-web-canary
   namespace: acme-air
 spec:
   replicas: 1
@@ -19,6 +20,7 @@ spec:
     metadata:
       labels:
         app: acme-web
+        analysis-tag: ${parameters.analysis-tag}
     spec:
       affinity: {}
       containers:
