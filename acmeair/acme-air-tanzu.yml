@@ -204,7 +204,7 @@ metadata:
     app: acme-web
     jiraTask: ${parameters.task_id}
   name: acme-web
-  namespace: acme-air-${trigger['tag']}
+  namespace: armory
 spec:
   ports:
     - name: http-port
