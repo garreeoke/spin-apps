@@ -2,8 +2,8 @@ apiVersion: v1
 data:
   ticket.rego: |
     package opa.pipelines
-    deny["Every pipeline must have environment_name parameter"] {
-       ticket = [d | d = input.pipeline.parameterConfig[_].name; d == "environment_name"]
+    deny["Every pipeline must have task_id parameter"] {
+       ticket = [d | d = input.pipeline.parameterConfig[_].name; d == "task_id"]
        count(input.pipeline.stages[_]) > 0
        count(ticket) == 0
     }

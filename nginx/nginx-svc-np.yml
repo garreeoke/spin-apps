@@ -4,7 +4,6 @@ metadata:
   labels:
     app: nginx
   name: nginx
-  namespace: nginx
 spec:
   ports:
   - name: http-port
@@ -13,5 +12,5 @@ spec:
   selector:
     app: nginx
   sessionAffinity: None
-  type: NodePort
+  type: ClusterIP
 
