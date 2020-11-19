@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tkc-setup-blah
+  namespace: armory
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      containers:
+        - env:
+            - name: SC_NAMESPACE
+              value: armory
+            - name: TKC_CLUSTER_NAME
+              value: aa-1
+            - name: SC_USER_PASS
+              value: VMwareisgreat11!
+            - name: SC_SERVER
+              value: 192.168.200.129
+            - name: SC_USER
+              value: administrator@vsphere.local
+            - name: SPIN_GATE_GRPC
+              value: '35.197.43.33:9091'
+          image: garreeoke/tkc-setup
+          imagePullPolicy: Always
+          name: tkc-setup
+      restartPolicy: Never
+

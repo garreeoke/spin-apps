@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: acme-web
+  namespace: acme-air
+spec:
+  endpoints:
+    - interval: 5s
+      port: http-port
+      path: rest/api/metrics
+  namespaceSelector:
+    any: false
+    matchNames:
+      - acme-air
+  podTargetLabels:
+    - app
+    - analysis
+  selector:
+    matchLabels:
+      app: acme-web
+      #analysis-tag: production
