@@ -4,7 +4,7 @@ metadata:
   labels:
     app: acme-web 
     analysis: ${parameters.analysis}
-    jenkinsbuild: 66
+    jenkinsbuild: "66"
   name: acme-web-canary
   namespace: acme-air
 spec:
