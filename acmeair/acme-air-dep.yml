@@ -4,7 +4,7 @@ metadata:
   labels:
     app: acme-web 
     analysis: ${parameters.analysis}
-    jenkinsbuild: '74'
+    jenkinsbuild: '75'
   name: acme-web-canary
   namespace: acme-air
 spec:
@@ -60,7 +60,7 @@ spec:
           value: mongodb
         - name: MONGO_PORT
           value: "27017"
-        image: garreeoke/acmenode:74
+        image: garreeoke/acmenode:75
         imagePullPolicy: Always
         name: acme-web
         ports:
