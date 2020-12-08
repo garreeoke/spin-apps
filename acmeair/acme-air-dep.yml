@@ -21,7 +21,7 @@ spec:
     metadata:
       labels:
         app: acme-web
-        analysis-tag: ${parameters.analysis}
+        analysis: ${parameters.analysis}
     spec:
       affinity: {}
       containers:
